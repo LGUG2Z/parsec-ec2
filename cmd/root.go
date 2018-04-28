@@ -40,10 +40,12 @@ func Execute() {
 }
 
 var installPath, region, cfgFile, goPath, instanceType, projectPath string
+var verbose bool
 
 func init() {
 	cobra.OnInitialize(initConfig)
 
+	RootCmd.PersistentFlags().BoolVarP(&verbose, "verbose", "v", false, "show verbose output")
 	RootCmd.PersistentFlags().StringVarP(&region, "region", "r", "", "aws region")
 	RootCmd.PersistentFlags().StringVarP(&instanceType, "instance-type", "i", "", "ec2 instance type")
 }

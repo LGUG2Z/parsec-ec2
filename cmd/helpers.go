@@ -14,6 +14,7 @@ import (
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/ec2"
 	"strings"
+	"syscall"
 )
 
 func getExternalIP() (string, error) {
@@ -133,23 +134,22 @@ func tfCmdVars(p TfVars, args []string) *exec.Cmd {
 }
 
 func executeSilent(command *exec.Cmd) error {
-	commandErr, err := command.StderrPipe()
-	if err != nil {
+
+	command.Stderr = os.Stderr
+	if verbose {
+		command.Stdout = os.Stdout
+	}
+
+	if err := command.Start(); err != nil {
 		return err
 	}
 
-	err = command.Start()
-	if err != nil {
-		return err
-	}
-
-	errOutput, err := ioutil.ReadAll(commandErr)
-	if err != nil {
-		return err
-	}
-
-	if len(errOutput) > 0 {
-		return fmt.Errorf("Error executing Terraform command: %s\nError Output: %s", command.Args[1], errOutput)
+	if err := command.Wait(); err != nil {
+		if exiterr, ok := err.(*exec.ExitError); ok {
+			if status, ok := exiterr.Sys().(syscall.WaitStatus); ok {
+				return fmt.Errorf("error executing command (%d): %v", status.ExitStatus(), err)
+			}
+		}
 	}
 
 	return nil
@@ -161,13 +161,9 @@ func executeReturn(command *exec.Cmd) ([]byte, error) {
 		return []byte{}, err
 	}
 
-	initErr, err := command.StderrPipe()
-	if err != nil {
-		return []byte{}, err
-	}
+	command.Stderr = os.Stderr
 
-	err = command.Start()
-	if err != nil {
+	if err := command.Start(); err != nil {
 		return []byte{}, err
 	}
 
@@ -176,50 +172,34 @@ func executeReturn(command *exec.Cmd) ([]byte, error) {
 		return []byte{}, err
 	}
 
-	errOutput, err := ioutil.ReadAll(initErr)
-	if err != nil {
-		return []byte{}, err
-	}
-
-	if len(errOutput) > 0 {
-		return []byte{}, fmt.Errorf("Error executing Terraform command: %s\nError Output: %s", command.Args[1], errOutput)
+	if err := command.Wait(); err != nil {
+		if exiterr, ok := err.(*exec.ExitError); ok {
+			if _, ok := exiterr.Sys().(syscall.WaitStatus); ok {
+				return []byte{}, err
+			}
+		}
 	}
 
 	return stdOutput, nil
 }
 
 func executePrint(command *exec.Cmd) error {
-	commandOut, err := command.StdoutPipe()
-	if err != nil {
+	command.Stderr = os.Stderr
+	if verbose {
+		command.Stdout = os.Stdout
+	}
+
+	if err := command.Start(); err != nil {
 		return err
 	}
 
-	commandErr, err := command.StderrPipe()
-	if err != nil {
-		return err
+	if err := command.Wait(); err != nil {
+		if exiterr, ok := err.(*exec.ExitError); ok {
+			if _, ok := exiterr.Sys().(syscall.WaitStatus); ok {
+				return err
+			}
+		}
 	}
-
-	err = command.Start()
-	if err != nil {
-		return err
-	}
-
-	stdOutput, err := ioutil.ReadAll(commandOut)
-	if err != nil {
-		return err
-	}
-
-	errOutput, err := ioutil.ReadAll(commandErr)
-	if err != nil {
-		return err
-	}
-
-	if len(errOutput) > 0 {
-		return fmt.Errorf("Error executing Terraform command: %s\nError output: %s", command.Args[1], errOutput)
-	}
-
-	fmt.Printf("%s\n", stdOutput)
-	fmt.Printf("%s\n", errOutput)
 
 	return nil
 }
