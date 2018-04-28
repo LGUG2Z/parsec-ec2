@@ -60,7 +60,7 @@ and log in with the provided Parsec server key.
 		}
 
 		refresh := tfCmdVars(p, []string{TfCmdRefresh})
-		if err := executeSilent(refresh); err != nil {
+		if err := execute(refresh); err != nil {
 			fmt.Println(err)
 			os.Exit(1)
 		}

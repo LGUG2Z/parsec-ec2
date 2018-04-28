@@ -65,7 +65,7 @@ parsec-ec2 stop
 		destroy := tfCmdVars(p, []string{TfCmdDestroy, TfFlagForce, TfFlagApprove})
 
 		fmt.Println("Terminating all AWS resources created by this session... ")
-		if err := executeSilent(destroy); err != nil {
+		if err := execute(destroy); err != nil {
 			fmt.Println(err)
 			os.Exit(1)
 		}

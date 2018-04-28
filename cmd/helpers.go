@@ -133,7 +133,7 @@ func tfCmdVars(p TfVars, args []string) *exec.Cmd {
 	return command
 }
 
-func executeSilent(command *exec.Cmd) error {
+func execute(command *exec.Cmd) error {
 
 	command.Stderr = os.Stderr
 	if verbose {

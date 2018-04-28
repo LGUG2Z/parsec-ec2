@@ -62,7 +62,7 @@ plugins required by Terraform.
 
 		init := tfCmd([]string{TfCmdInit})
 
-		if err := executeSilent(init); err != nil {
+		if err := execute(init); err != nil {
 			fmt.Println(err)
 			os.Exit(1)
 		}

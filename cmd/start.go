@@ -94,7 +94,7 @@ parsec-ec2 start --aws-region eu-central-1 --instance-type g2.2xlarge --bid 0.10
 			start = tfCmdVars(p, []string{TfCmdApply, TfFlagApprove})
 			fmt.Printf("Making spot request for a %s instance in %s with a bid of $%s...\n", p.InstanceType, p.Region, p.SpotPrice)
 
-			if err := executeSilent(start); err != nil {
+			if err := execute(start); err != nil {
 				fmt.Println(err)
 				os.Exit(1)
 			}
