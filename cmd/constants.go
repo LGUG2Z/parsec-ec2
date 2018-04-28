@@ -22,6 +22,7 @@ const (
 const (
 	TfFlagForce = "-force"
 	TfFlagJSON  = "-json"
+	TfFlagApprove = "-auto-approve"
 )
 
 // Filenames
