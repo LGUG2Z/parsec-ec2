@@ -31,11 +31,11 @@ func getExternalIP() (string, error) {
 		return fmt.Sprintf("%s/%s", strings.TrimSpace(string(b)), "32"), nil
 	}
 
-	return "", errors.New("Could not get external ip address.")
+	return "", errors.New("could not get external ip address")
 }
 
 func getEc2Client(region string) (*ec2.EC2, error) {
-	session, err := session.NewSession()
+	sess, err := session.NewSession()
 	if err != nil {
 		return nil, err
 	}
@@ -44,7 +44,7 @@ func getEc2Client(region string) (*ec2.EC2, error) {
 		Region: aws.String(region),
 	}
 
-	return ec2.New(session, &config), nil
+	return ec2.New(sess, &config), nil
 }
 
 func getVpcID(svc *ec2.EC2) (string, error) {
@@ -93,7 +93,7 @@ func getSubnetID(svc *ec2.EC2, availabilityZone string) (string, error) {
 	return *result.Subnets[0].SubnetId, nil
 }
 
-func copy(source, destination string) error {
+func cp(source, destination string) error {
 	b, err := ioutil.ReadFile(source)
 	if err != nil {
 		return err

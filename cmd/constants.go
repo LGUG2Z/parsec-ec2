@@ -18,17 +18,6 @@ const (
 	TfCmdRefresh = "refresh"
 )
 
-// Parsec Terraform Template Outputs
-const (
-	TfOutputInstanceType   = "instance_type"
-	TfOutputRegion         = "region"
-	TfOutputServerKey      = "server_key"
-	TfOutputSpotInstanceID = "spot_instance_id"
-	TfOutputSpotPrice      = "spot_price"
-	TfOutputSubnetID       = "subnet_id"
-	TfOutputVpcID          = "vpc_id"
-)
-
 // Terraform CLI Command Flags
 const (
 	TfFlagForce = "-force"
@@ -51,8 +40,7 @@ const (
 func ec2Regions() map[string]endpoints.Region {
 	partition := endpoints.AwsPartition()
 	services := partition.Services()
-	ec2 := services[endpoints.Ec2ServiceID]
-	return ec2.Regions()
+	return services[endpoints.Ec2ServiceID].Regions()
 }
 
 func isValidRegion(validRegions map[string]endpoints.Region, input string) bool {

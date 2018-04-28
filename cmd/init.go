@@ -48,14 +48,14 @@ plugins required by Terraform.
 
 		tSrc := fmt.Sprintf("%s/%s", projectPath, Template)
 		tDst := fmt.Sprintf("%s/%s", installPath, Template)
-		if err := copy(tSrc, tDst); err != nil {
+		if err := cp(tSrc, tDst); err != nil {
 			fmt.Println(err)
 			os.Exit(1)
 		}
 
 		uSrc := fmt.Sprintf("%s/%s", projectPath, Userdata)
 		uDst := fmt.Sprintf("%s/%s", installPath, Userdata)
-		if err := copy(uSrc, uDst); err != nil {
+		if err := cp(uSrc, uDst); err != nil {
 			fmt.Println(err)
 			os.Exit(1)
 		}
