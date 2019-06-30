@@ -42,6 +42,15 @@ provider "aws" {
   region = "${var.region}"
 }
 
+data "aws_ami" "parsec" {
+  most_recent = true
+  owners      = ["self", "589318761596"]
+  filter {
+    name = "name"
+    values = ["${var.ami}"]
+  }
+}
+
 resource "aws_security_group" "parsec" {
   vpc_id = "${var.vpc_id}"
   name = "parsec"
@@ -100,7 +109,7 @@ data "template_file" "user_data" {
 
 resource "aws_spot_instance_request" "parsec" {
     spot_price = "${var.spot_price}"
-    ami = var.ami
+    ami = "${data.aws_ami.parsec.id}"
     subnet_id = "${var.subnet_id}"
     instance_type = "${var.instance_type}"
     spot_type = "one-time"

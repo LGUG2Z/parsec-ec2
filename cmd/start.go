@@ -77,7 +77,7 @@ parsec-ec2 start --aws-region eu-central-1 --instance-type g2.2xlarge --bid 0.10
 
 		var p TfVars
 
-		if err := p.Calculate(ec2Client, region, serverKey, instanceType, amiID, volumeSize); err != nil {
+		if err := p.Calculate(ec2Client, region, serverKey, instanceType, amiName, volumeSize); err != nil {
 			fmt.Println(err)
 			os.Exit(1)
 		}
@@ -90,9 +90,9 @@ parsec-ec2 start --aws-region eu-central-1 --instance-type g2.2xlarge --bid 0.10
 
 			fmt.Printf(
 				"Planning spot request for a %s "+
-				"instance from AMI %s in %s with volume size %s "+
+				"instance from AMI %s in %s with volume size %d "+
 				"and a bid of $%s...\n\n",
-				p.InstanceType, p.AmiID, p.Region, p.VolumeSize, p.SpotPrice)
+				p.InstanceType, p.AmiName, p.Region, p.VolumeSize, p.SpotPrice)
 			
 			if err := executePrint(start); err != nil {
 				fmt.Println(err)
@@ -106,7 +106,7 @@ parsec-ec2 start --aws-region eu-central-1 --instance-type g2.2xlarge --bid 0.10
 				"Making spot request for a %s "+
 				"instance from AMI %s in %s with volume size %s "+
 				"and a bid of $%s...\n\n",
-				p.InstanceType, p.AmiID, p.Region, p.VolumeSize, p.SpotPrice)
+				p.InstanceType, p.AmiName, p.Region, p.VolumeSize, p.SpotPrice)
 
 			if err := executePrint(start); err != nil {
 				fmt.Println(err)

@@ -9,7 +9,7 @@ import (
 )
 
 type TfVars struct {
-	AmiID          string `json:"ami_id"`
+	AmiName        string `json:"amiName"`
 	IP             string `json:"ip"`
 	InstanceType   string `json:"instance_type"`
 	Region         string `json:"region"`
@@ -74,7 +74,7 @@ func (v *TfVars) Write() error {
 	return ioutil.WriteFile(filePath, bytes, 0644)
 }
 
-func (v *TfVars) Calculate(ec2Client *ec2.EC2, region, serverKey, instanceType, amiID  string, volumeSize int) error {
+func (v *TfVars) Calculate(ec2Client *ec2.EC2, region, serverKey, instanceType, amiName  string, volumeSize int) error {
 	vpcID, err := getVpcID(ec2Client)
 	if err != nil {
 		return err
@@ -99,7 +99,7 @@ func (v *TfVars) Calculate(ec2Client *ec2.EC2, region, serverKey, instanceType, 
 	v.SpotPrice = spotBid
 	v.SubnetID = subnetID
 	v.VpcID = vpcID
-	v.AmiID = amiID
+	v.AmiName = amiName
 	v.VolumeSize = volumeSize
 
 	ip, err := getExternalIP()

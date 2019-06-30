@@ -39,7 +39,7 @@ func Execute() {
 	}
 }
 
-var installPath, region, cfgFile, goPath, instanceType, projectPath, amiID string
+var installPath, region, cfgFile, goPath, instanceType, projectPath, amiName string
 var volumeSize int
 
 func init() {
@@ -47,7 +47,7 @@ func init() {
 
 	RootCmd.PersistentFlags().StringVarP(&region, "region", "r", "", "aws region")
 	RootCmd.PersistentFlags().StringVarP(&instanceType, "instance-type", "i", "", "ec2 instance type")
-	RootCmd.PersistentFlags().StringVarP(&amiID, "ami-id", "a", "", "AMI ID to create ec2 instance")
+	RootCmd.PersistentFlags().StringVarP(&amiName, "ami-name", "a", "", "AMI Name to create ec2 instance")
 }
 
 // initConfig reads in config file and ENV variables if set.
