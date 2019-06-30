@@ -91,6 +91,13 @@ resource "aws_security_group" "parsec" {
       cidr_blocks = ["${var.ip}"]
   }
 
+  ingress {
+      from_port = 0
+      to_port = 0
+      protocol = "-1"
+      cidr_blocks = ["169.254.169.254/32"]
+  }
+  
   egress {
       from_port = 0
       to_port = 0
