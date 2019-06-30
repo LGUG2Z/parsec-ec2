@@ -92,8 +92,8 @@ resource "aws_security_group" "parsec" {
   }
 
   ingress {
-      from_port = 80
-      to_port = 80
+      from_port = 0
+      to_port = 0
       protocol = "-1"
       cidr_blocks = ["169.254.169.254/32"]
   }
