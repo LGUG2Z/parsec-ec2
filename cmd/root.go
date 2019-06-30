@@ -65,7 +65,7 @@ func initConfig() {
 
 		goPath = os.Getenv("GOPATH")
 
-		projectPath = fmt.Sprintf("%s/Programs/parsec-ec2", home)
+		projectPath = fmt.Sprintf("%s/src/github.com/lgug2z/parsec-ec2", goPath)
 		installPath = fmt.Sprintf("%s/.parsec-ec2", home)
 
 		// Search config in home directory with name ".parsec-ec2" (without extension).
