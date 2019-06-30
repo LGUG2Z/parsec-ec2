@@ -110,13 +110,7 @@ resource "aws_spot_instance_request" "parsec" {
     }
 
     root_block_device {
-      volume_size = 50
-    }
-
-    ebs_block_device {
       volume_size = var.volume_size
-      volume_type = "gp2"
-      device_name = "xvdg"
     }
 
     user_data = "${data.template_file.user_data.rendered}"
