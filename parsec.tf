@@ -106,14 +106,6 @@ resource "aws_security_group" "parsec" {
   }
 }
 
-data "template_file" "user_data" {
-    template = "${file("user_data.tmpl")}"
-
-    vars = {
-        server_key = "${var.server_key}"
-    }
-}
-
 resource "aws_spot_instance_request" "parsec" {
     spot_price = "${var.spot_price}"
     ami = "${data.aws_ami.parsec.id}"
@@ -128,8 +120,6 @@ resource "aws_spot_instance_request" "parsec" {
     root_block_device {
       volume_size = var.volume_size
     }
-
-    user_data = "${data.template_file.user_data.rendered}"
 
     vpc_security_group_ids = ["${aws_security_group.parsec.id}"]
     associate_public_ip_address = true
