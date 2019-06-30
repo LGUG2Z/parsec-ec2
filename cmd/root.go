@@ -39,13 +39,15 @@ func Execute() {
 	}
 }
 
-var installPath, region, cfgFile, goPath, instanceType, projectPath string
+var installPath, region, cfgFile, goPath, instanceType, projectPath, amiID string
+var volumeSize int
 
 func init() {
 	cobra.OnInitialize(initConfig)
 
 	RootCmd.PersistentFlags().StringVarP(&region, "region", "r", "", "aws region")
 	RootCmd.PersistentFlags().StringVarP(&instanceType, "instance-type", "i", "", "ec2 instance type")
+	RootCmd.PersistentFlags().StringVarP(&amiID, "ami-id", "a", "", "AMI ID to create ec2 instance")
 }
 
 // initConfig reads in config file and ENV variables if set.
@@ -63,7 +65,7 @@ func initConfig() {
 
 		goPath = os.Getenv("GOPATH")
 
-		projectPath = fmt.Sprintf("%s/src/github.com/lgug2z/parsec-ec2", goPath)
+		projectPath = fmt.Sprintf("%s/Programs/parsec-ec2", home)
 		installPath = fmt.Sprintf("%s/.parsec-ec2", home)
 
 		// Search config in home directory with name ".parsec-ec2" (without extension).

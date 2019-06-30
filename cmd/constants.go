@@ -33,6 +33,7 @@ const (
 const (
 	TfFlagForce = "-force"
 	TfFlagJSON  = "-json"
+	TfFlagAutoApprove = "-auto-approve"
 )
 
 // Filenames
@@ -69,6 +70,7 @@ func gInstances() []string {
 		ec2.InstanceTypeG22xlarge,
 		ec2.InstanceTypeG28xlarge,
 		ec2.InstanceTypeG34xlarge,
+		ec2.InstanceTypeG3sXlarge,
 		ec2.InstanceTypeG38xlarge,
 		ec2.InstanceTypeG316xlarge,
 	}
@@ -81,4 +83,12 @@ func isValidGInstance(validInstances []string, input string) bool {
 		}
 	}
 	return false
+}
+
+func gMinVolumeSize() int {
+	return 35
+}
+
+func isValidVolumeSize(minSize, input int) bool {
+	return input >= minSize
 }

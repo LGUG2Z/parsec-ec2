@@ -64,6 +64,11 @@ parsec-ec2 start --aws-region eu-central-1 --instance-type g2.2xlarge --bid 0.10
 			os.Exit(1)
 		}
 
+		if !isValidVolumeSize(gMinVolumeSize(), volumeSize) {
+			fmt.Printf("%d is less than a minumum volume size %d.\n", volumeSize, gMinVolumeSize())
+			os.Exit(1)
+		}
+
 		ec2Client, err := getEc2Client(region)
 		if err != nil {
 			fmt.Println(err)
@@ -72,7 +77,7 @@ parsec-ec2 start --aws-region eu-central-1 --instance-type g2.2xlarge --bid 0.10
 
 		var p TfVars
 
-		if err := p.Calculate(ec2Client, region, serverKey, instanceType); err != nil {
+		if err := p.Calculate(ec2Client, region, serverKey, instanceType, amiID, volumeSize); err != nil {
 			fmt.Println(err)
 			os.Exit(1)
 		}
@@ -83,7 +88,12 @@ parsec-ec2 start --aws-region eu-central-1 --instance-type g2.2xlarge --bid 0.10
 		if plan {
 			start = tfCmdVars(p, []string{TfCmdPlan})
 
-			fmt.Printf("Planning spot request for a %s instance in %s with a bid of $%s...\n\n", p.InstanceType, p.Region, p.SpotPrice)
+			fmt.Printf(
+				"Planning spot request for a %s "+
+				"instance from AMI %s in %s with volume size %s "+
+				"and a bid of $%s...\n\n",
+				p.InstanceType, p.AmiID, p.Region, p.VolumeSize, p.SpotPrice)
+			
 			if err := executePrint(start); err != nil {
 				fmt.Println(err)
 				os.Exit(1)
@@ -91,10 +101,14 @@ parsec-ec2 start --aws-region eu-central-1 --instance-type g2.2xlarge --bid 0.10
 
 			fmt.Println("If you are happy with this plan run the start command again without the --plan flag.")
 		} else {
-			start = tfCmdVars(p, []string{TfCmdApply})
-			fmt.Printf("Making spot request for a %s instance in %s with a bid of $%s...\n", p.InstanceType, p.Region, p.SpotPrice)
+			start = tfCmdVars(p, []string{TfCmdApply, TfFlagAutoApprove})
+			fmt.Printf(
+				"Making spot request for a %s "+
+				"instance from AMI %s in %s with volume size %s "+
+				"and a bid of $%s...\n\n",
+				p.InstanceType, p.AmiID, p.Region, p.VolumeSize, p.SpotPrice)
 
-			if err := executeSilent(start); err != nil {
+			if err := executePrint(start); err != nil {
 				fmt.Println(err)
 				os.Exit(1)
 			}
@@ -127,4 +141,5 @@ func init() {
 	startCmd.Flags().Float64VarP(&bid, "bid", "b", 0.00, "amount to bid relative to the current highest spot price")
 	startCmd.Flags().StringVarP(&serverKey, "server-key", "k", "", "Parsec server key")
 	startCmd.Flags().BoolVarP(&plan, "plan", "p", false, "plan out the resources to be created without creating them")
+	startCmd.Flags().IntVarP(&volumeSize, "volume-size", "s", 0, "volume size to be used for EC2 instance")
 }
