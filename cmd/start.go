@@ -104,7 +104,7 @@ parsec-ec2 start --aws-region eu-central-1 --instance-type g2.2xlarge --bid 0.10
 			start = tfCmdVars(p, []string{TfCmdApply, TfFlagAutoApprove})
 			fmt.Printf(
 				"Making spot request for a %s "+
-				"instance from AMI %s in %s with volume size %s "+
+				"instance from AMI %s in %s with volume size %d "+
 				"and a bid of $%s...\n\n",
 				p.InstanceType, p.AmiName, p.Region, p.VolumeSize, p.SpotPrice)
 
