@@ -79,6 +79,9 @@ The amount to bid above the current highest spot price for the instance is speci
 current highest spot price is $0.20, running the command with `--bid 0.10` will make a spot request with a bid price
 of $0.30. Alternatively this flag can be left blank if you don't want to bid higher than the current highest bid price.
 
+You also need to provide --volume-size parameter which is going to be used to determine the size of the root volume.
+And --ami-name will be used to search AMI either from Parsec's AWS account or your own.
+
 If the `--plan` flag is used, the spot request will not be sent and instead the `terraform plan` command will be run
 which will output to the terminal the details of any AWS resources that will be created by running the `start` command.
 
@@ -88,14 +91,19 @@ Examples:
 parsec-ec2 start \
 --region eu-west-1 \
 --instance-type g3.4xlarge \
---bid 0.10
+--bid 0.10 \
+--volume-size 45 \
+--ami-name parsec-ksp-1
+
 ```
 ```
 # With the server key passed using the --server-key flag
 parsec-ec2 start \
 --region eu-west-2 \
 --instance-type g2.2xlarge \
---bid 0.10 \ 
+--bid 0.10 \
+--volume-size 45 \
+--ami-name parsec-ksp-1 \
 ---server-key xxxxx
 ```
 ```
@@ -104,6 +112,8 @@ parsec-ec2 start \
 --region eu-central-1 \
 --instance-type g2.2xlarge \
 --bid 0.10 \
+--volume-size 45 \
+--ami-name parsec-ksp-1 \
 --plan
 ```
 
