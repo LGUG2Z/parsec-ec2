@@ -28,6 +28,10 @@ variable "ami" {
   type = "string"
 }
 
+variable "volume_size" {
+  type = number
+}
+
 variable "ip"  {
   type = "string"
 }
@@ -40,6 +44,7 @@ provider "aws" {
 
 data "aws_ami" "parsec" {
   most_recent = true
+  owners      = ["self", "589318761596"]
   filter {
     name = "name"
     values = ["${var.ami}"]
@@ -86,6 +91,13 @@ resource "aws_security_group" "parsec" {
       cidr_blocks = ["${var.ip}"]
   }
 
+  ingress {
+      from_port = 0
+      to_port = 0
+      protocol = "-1"
+      cidr_blocks = ["169.254.169.254/32"]
+  }
+  
   egress {
       from_port = 0
       to_port = 0
@@ -97,7 +109,7 @@ resource "aws_security_group" "parsec" {
 data "template_file" "user_data" {
     template = "${file("user_data.tmpl")}"
 
-    vars {
+    vars = {
         server_key = "${var.server_key}"
     }
 }
@@ -109,18 +121,12 @@ resource "aws_spot_instance_request" "parsec" {
     instance_type = "${var.instance_type}"
     spot_type = "one-time"
 
-    tags {
+    tags = {
         Name = "ParsecServer"
     }
 
     root_block_device {
-      volume_size = 50
-    }
-
-    ebs_block_device {
-      volume_size = 100
-      volume_type = "gp2"
-      device_name = "xvdg"
+      volume_size = var.volume_size
     }
 
     user_data = "${data.template_file.user_data.rendered}"

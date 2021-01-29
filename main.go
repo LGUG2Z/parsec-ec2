@@ -14,7 +14,7 @@
 
 package main
 
-import "github.com/lgug2z/parsec-ec2/cmd"
+import "github.com/tereshkin/parsec-ec2/cmd"
 
 func main() {
 	cmd.Execute()

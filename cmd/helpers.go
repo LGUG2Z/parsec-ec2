@@ -126,7 +126,8 @@ func tfCmdVars(p TfVars, args []string) *exec.Cmd {
 	command.Env = append(command.Env, fmt.Sprintf("TF_VAR_spot_price=%s", p.SpotPrice))
 	command.Env = append(command.Env, fmt.Sprintf("TF_VAR_subnet_id=%s", p.SubnetID))
 	command.Env = append(command.Env, fmt.Sprintf("TF_VAR_vpc_id=%s", p.VpcID))
-	command.Env = append(command.Env, fmt.Sprintf("TF_VAR_ami=%s", p.AMI))
+	command.Env = append(command.Env, fmt.Sprintf("TF_VAR_ami=%s", p.AmiName))
+	command.Env = append(command.Env, fmt.Sprintf("TF_VAR_volume_size=%d", p.VolumeSize))
 	command.Env = append(command.Env, fmt.Sprintf("TF_VAR_ip=%s", p.IP))
 
 	return command

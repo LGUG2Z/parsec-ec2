@@ -5,13 +5,11 @@ import (
 	"fmt"
 	"io/ioutil"
 
-	"strings"
-
 	"github.com/aws/aws-sdk-go/service/ec2"
 )
 
 type TfVars struct {
-	AMI            string `json:"ami"`
+	AmiName        string `json:"amiName"`
 	IP             string `json:"ip"`
 	InstanceType   string `json:"instance_type"`
 	Region         string `json:"region"`
@@ -19,6 +17,7 @@ type TfVars struct {
 	SpotPrice      string `json:"spot_price"`
 	SubnetID       string `json:"subnet_id"`
 	VpcID          string `json:"vpc_id"`
+	VolumeSize     int    `json:"volume_size"`
 }
 
 type TfOutputs struct {
@@ -75,7 +74,7 @@ func (v *TfVars) Write() error {
 	return ioutil.WriteFile(filePath, bytes, 0644)
 }
 
-func (v *TfVars) Calculate(ec2Client *ec2.EC2, region, serverKey, instanceType string) error {
+func (v *TfVars) Calculate(ec2Client *ec2.EC2, region, serverKey, instanceType, amiName  string, volumeSize int) error {
 	vpcID, err := getVpcID(ec2Client)
 	if err != nil {
 		return err
@@ -100,6 +99,8 @@ func (v *TfVars) Calculate(ec2Client *ec2.EC2, region, serverKey, instanceType s
 	v.SpotPrice = spotBid
 	v.SubnetID = subnetID
 	v.VpcID = vpcID
+	v.AmiName = amiName
+	v.VolumeSize = volumeSize
 
 	ip, err := getExternalIP()
 	if err != nil {
@@ -107,12 +108,6 @@ func (v *TfVars) Calculate(ec2Client *ec2.EC2, region, serverKey, instanceType s
 	}
 
 	v.IP = ip
-
-	if strings.Contains(instanceType, "g2.") {
-		v.AMI = "parsec-g2-*"
-	} else if strings.Contains(instanceType, "g3.") {
-		v.AMI = "parsec-g3-*"
-	}
 
 	return nil
 }
